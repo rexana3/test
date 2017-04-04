@@ -22,22 +22,23 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.*;
 
-public class newClient4{
-    //ÁÄÌì½çÃæÉè¼Æ
-    JFrame frame = new JFrame("ÎÒµÄÊıÖÇ");
-    JFrame frameChoose = new JFrame("Ñ¡ÔñÄãÒª·¢ËÍµÄÎÄ¼ş");
+public class newClient5{
+    //èŠå¤©ç•Œé¢è®¾è®¡
+    JFrame frame = new JFrame("æˆ‘çš„æ•°æ™º");
+    JFrame frameChoose = new JFrame("é€‰æ‹©ä½ è¦å‘é€çš„æ–‡ä»¶");
     JPanel contentPane = new JPanel();
     JPanel contentPane1 = new JPanel();
     JTextField textField =  new JTextField(50);
     JTextArea textArea  = new JTextArea(20,50);
-    JButton button = new JButton("·¢ËÍÎÄ¼ş");
+    JButton button = new JButton("å‘é€æ–‡ä»¶");
 
-    //µÇÂ½½çÃæÉè¼Æ
-    JFrame frame1 = new JFrame("ÊäÈëÄãµÄÓÃ»§Ãû");
+    //ç™»é™†ç•Œé¢è®¾è®¡
+    JFrame frame1 = new JFrame("è¾“å…¥ä½ çš„ç”¨æˆ·å");
     JPanel pane1= new JPanel();
     JTextField textField1 = new JTextField(16);
-    JButton button1 = new JButton("È·ÈÏ");
-
+    JButton button1 = new JButton("ç¡®è®¤");
+    //ä¿å­˜æ–‡ä»¶
+    JFrame frameSave = new JFrame("é€‰æ‹©ä½ è¦å‘é€çš„æ–‡ä»¶");
     String name ;
     String message;
     Socket socket;
@@ -49,12 +50,12 @@ public class newClient4{
     String fileString = null;
     String filePath =null;
     public static void main(String[] args)throws Exception{
-        newClient3 nc =new newClient4();
+        newClient5 nc =new newClient5();
         nc.login();
 
         nc.connectServer();
     }
-    //µÇÂ½½çÃæ£¬Ğ´ÈëÓÃ»§Ãû¡£µã»÷°´Å¥»ñÈ¡ÓÃ»§Ãû²¢ÇÒÒş²Ø´°¿Ú,²¢ÇÒÆô¶¯ÁÄÌì¿ò£»
+    //ç™»é™†ç•Œé¢ï¼Œå†™å…¥ç”¨æˆ·åã€‚ç‚¹å‡»æŒ‰é’®è·å–ç”¨æˆ·åå¹¶ä¸”éšè—çª—å£,å¹¶ä¸”å¯åŠ¨èŠå¤©æ¡†ï¼›
     public void login(){
         frame1.setBounds(500, 300, 1000, 100);
         frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -76,7 +77,7 @@ public class newClient4{
             }
         });
     }
-    //ÁÄÌì½çÃæ
+    //èŠå¤©ç•Œé¢
     public void chatDraw(){
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setBounds(350, 100, 450, 300);
@@ -89,7 +90,7 @@ public class newClient4{
 
         frame.pack();
         frame.setVisible(true);
-        //¼üÅÌ¼àÌı
+        //é”®ç›˜ç›‘å¬
         textField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -98,7 +99,7 @@ public class newClient4{
                 }
             }
         });
-        //°´Å¥¼àÌı
+        //æŒ‰é’®ç›‘å¬
         button.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 choose();
@@ -110,8 +111,8 @@ public class newClient4{
         //String fileString = null;
         //String filePath =null;
         frameChoose.setBounds(300,100,200,200);
-        JButton buttonChoose = new JButton("·¢ËÍ");
-        JButton buttonOpen  = new JButton("´ò¿ª");
+        JButton buttonChoose = new JButton("å‘é€");
+        JButton buttonOpen  = new JButton("æ‰“å¼€");
         JTextArea textChoose = new JTextArea(20,20);
         JTextField textFieldChoose = new JTextField(20);
         JPanel panelChoose = new JPanel();
@@ -122,15 +123,15 @@ public class newClient4{
         frameChoose.add(jspChoose,BorderLayout.SOUTH);
         frameChoose.add(panelChoose,BorderLayout.NORTH);
 
-        //ÉèÖÃµ¥ĞĞ¿òÓĞÄ¬ÈÏÂ·¾¶
-        //textFieldChoose.setText("e:\\11.txt");
+        //è®¾ç½®å•è¡Œæ¡†æœ‰é»˜è®¤è·¯å¾„
+        textFieldChoose.setText("e:\\11.txt");
 
-        //µ±°´´ò¿ª°´Å¥Ê±»ñÈ¡ÊäÈëµÄÂ·¾¶
+        //å½“æŒ‰æ‰“å¼€æŒ‰é’®æ—¶è·å–è¾“å…¥çš„è·¯å¾„
         buttonOpen.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                //Çå¿Õµ¥ĞĞ¿ò
+                //æ¸…ç©ºå•è¡Œæ¡†
                 textChoose.setText("");
-                //»ñÈ¡µ¥ĞĞ¿òµÄÄÚÈİ
+                //è·å–å•è¡Œæ¡†çš„å†…å®¹
                 fileString = textFieldChoose.getText();
                 //System.out.println(fileString);
                 File file =  new File(fileString);
@@ -140,8 +141,8 @@ public class newClient4{
                 }
             }
         });
-        //µã»÷·¢ËÍ°´Å¥
-       buttonChoose.addActionListener(new ActionListener(){
+        //ç‚¹å‡»å‘é€æŒ‰é’®
+      buttonChoose.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 try{
                     writer = new PrintStream(socket.getOutputStream());
@@ -150,8 +151,7 @@ public class newClient4{
                     writer.println("a");
                     String line = null;
                     while ((line = br.readLine()) != null) {
-                        writer.println(line);
-
+                            writer.println(line);
                     }
                     frameChoose.setVisible(false);
                 }catch(Exception ex){
@@ -162,8 +162,7 @@ public class newClient4{
         frameChoose.pack();
         frameChoose.setVisible(true);
     }
-
-    //Ö´ĞĞ·¢ËÍ
+    //æ‰§è¡Œå‘é€
     public void send(){
         message = textField.getText().trim();
         try{
@@ -172,13 +171,59 @@ public class newClient4{
             message = textField.getText().trim();
             ip= InetAddress.getLocalHost().getHostAddress();
             textField.setText(null);
-            writer.println("  "+name+"£º"+message);
+            writer.println("  "+name+"ï¼š"+message);
         }catch(Exception e){
         }
     }
+ public void saveFile(String content){
+        frameSave.setBounds(900,100,200,200);
+        JPanel panelSave =new JPanel();
+        JTextArea textAreaSave = new JTextArea(20,30);
+        JTextField textFieldSave = new JTextField(20);
+        JButton buttonOpen1 = new JButton("æ‰“å¼€");
+        JButton buttonSave = new JButton("ä¿å­˜");
+        JScrollPane jspSave = new JScrollPane(textAreaSave);
+        panelSave.add(textFieldSave,BorderLayout.WEST);
+        panelSave.add(buttonOpen1,BorderLayout.EAST);
+        panelSave.add(buttonSave,BorderLayout.CENTER);
+        frameSave.add(jspSave,BorderLayout.SOUTH);
+        frameSave.add(panelSave,BorderLayout.NORTH);
+        textFieldSave.setText("e:\\12.txt");
+        frameSave.pack();
+        frameSave.setVisible(true);
+        buttonOpen1.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                String fileSavePath;
+                textAreaSave.setText("");
+                fileSavePath = textFieldSave.getText();
+                //System.out.println(fileString);
+                File file =  new File(fileSavePath);
+                String fileNames[] = file.list();
+                for(String fileName:fileNames){
+                    textAreaSave.append(fileName+"\n");
+                }
+            }
+        });
+        //ä¿å­˜æŒ‰é”®çš„ç›‘å¬
+        buttonSave.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                try{
+                    String fileSavePath  = textFieldSave.getText();
+                    BufferedWriter bufw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileSavePath)));
+                    bufw.write(content);
+                    System.out.println("save:"+content);
+                    bufw.newLine();
+                    bufw.flush();
 
+                    frameSave.setVisible(false);
+                }catch(Exception ex){
 
-    //Á¬½Ó·şÎñ¶Ë
+                }
+            }
+        });
+    }
+
+    //è¿æ¥æœåŠ¡ç«¯
     public void connectServer() throws Exception,IOException{
         socket = new Socket("192.168.0.108",30000);
         new Thread(new ClientThread(socket,textArea)).start();
@@ -194,13 +239,25 @@ class ClientThread implements Runnable{
         this.textArea = textArea;
         this.setS(s);
         br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-
     }
     public void run(){
         try{
-            while((content =br.readLine())!=null){
-                System.out.println(content);
-                textArea.append(content+"\n");
+            content =br.readLine();
+            System.out.println("xsss");
+            if('a'==content.charAt(0)){
+                    String st = "";
+                    System.out.println("è¿›å…¥åˆ¤æ–­");
+                    while(true){
+                        content =br.readLine();
+                        System.out.println("è¿›å…¥ç¬¬äºŒæ¬¡å¾ªç¯");
+                        st+=content;
+                        if(content==null) {
+                            System.out.println(s);
+                            new newClient5().saveFile(st);
+                            break;
+                        }
+                    }
+                    s.shutdownOutput();
             }
         }catch(Exception e){
             e.printStackTrace();

@@ -3,7 +3,7 @@ import java.net.*;
 import java.util.*;
 import java.util.List;
 
-public class newServer2 {
+public class newServer3 {
     public static List<Socket> socketList = Collections.synchronizedList(new ArrayList<>());
 
     public static void main(String[] args) throws IOException {
@@ -33,7 +33,7 @@ class ServerThread implements Runnable {
             int flag  =0;
             while((content = readFromClient())!=null){
                 //PrintStream ps = new PrintStream(socket.getOutputStream());
-                for(Socket socket : newServer2.socketList){
+                for(Socket socket : newServer3.socketList){
                       PrintStream ps = new PrintStream(socket.getOutputStream());
                       if('a'==content.charAt(0)){
                             System.out.println("收到文件");
@@ -45,6 +45,7 @@ class ServerThread implements Runnable {
                         else{
                              ps.println(content);
                          }
+                         ps.println(content);
                 }
             }
         }catch(IOException e){
@@ -58,7 +59,7 @@ class ServerThread implements Runnable {
 
             return temp;
         }catch(IOException e){
-            newServer2.socketList.remove(s);
+            newServer3.socketList.remove(s);
 
         }
         return null;

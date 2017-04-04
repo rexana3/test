@@ -7,7 +7,6 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.Socket;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -22,7 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.*;
 
-public class newClient4 {
+public class newClient6 {
     //聊天界面设计
     JFrame frame = new JFrame("我的数智");
     JFrame frameChoose = new JFrame("选择你要发送的文件");
@@ -50,7 +49,7 @@ public class newClient4 {
     String fileString = null;
     String filePath = null;
     public static void main(String[] args)throws Exception {
-        newClient4 nc = new newClient4();
+        newClient6 nc = new newClient6();
         nc.login();
 
         nc.connectServer();
@@ -108,8 +107,6 @@ public class newClient4 {
     }
 
     public void choose () {
-        //String fileString = null;
-        //String filePath =null;
         frameChoose.setBounds(300, 100, 200, 200);
         JButton buttonChoose = new JButton("发送");
         JButton buttonOpen  = new JButton("打开");
@@ -124,7 +121,7 @@ public class newClient4 {
         frameChoose.add(panelChoose, BorderLayout.NORTH);
 
         //设置单行框有默认路径
-        textFieldChoose.setText("d:\\1.txt");
+        textFieldChoose.setText("c:");
 
         //当按打开按钮时获取输入的路径
         buttonOpen.addActionListener(new ActionListener() {
@@ -148,7 +145,7 @@ public class newClient4 {
                     writer = new PrintStream(socket.getOutputStream());
                     filePath = textFieldChoose.getText();
                     BufferedReader br = new BufferedReader(new FileReader(filePath));
-                    writer.println("a");
+                    writer.println("abc");
                     String line = null;
                     while ((line = br.readLine()) != null) {
                         writer.println(line);
@@ -190,7 +187,7 @@ public class newClient4 {
         panelSave.add(buttonSave, BorderLayout.CENTER);
         frameSave.add(jspSave, BorderLayout.SOUTH);
         frameSave.add(panelSave, BorderLayout.NORTH);
-        textFieldSave.setText("d:\\2.txt");
+        textFieldSave.setText("c:\\");
         frameSave.pack();
         frameSave.setVisible(true);
         //  textFieldSave.setText("e:\\11.txt");
@@ -199,7 +196,6 @@ public class newClient4 {
                 String fileSavePath;
                 textAreaSave.setText("");
                 fileSavePath = textFieldSave.getText();
-                //System.out.println(fileString);
                 File file =  new File(fileSavePath);
                 String fileNames[] = file.list();
                 for (String fileName : fileNames) {
@@ -211,15 +207,9 @@ public class newClient4 {
         buttonSave.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int i = 4;
-                    String fileSavePath  = textFieldSave.getText();
-                    //  BufferedOutputStream bw =null;
-                    //  bw=new BufferedOutputStream(new FileOutputStream(fileSavePath));
-                    BufferedWriter bufw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileSavePath)));
 
-                    //bw.write(content);
-                    //OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(fileSavePath,content));
-                    // bufw.write(line.toUpperCase());
+                    String fileSavePath  = textFieldSave.getText();
+                    BufferedWriter bufw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileSavePath)));
                     bufw.write(content);
                     System.out.println("save:" + content);
                     bufw.newLine();
@@ -231,6 +221,8 @@ public class newClient4 {
                 }
             }
         });
+
+
     }
 
     //连接服务端
@@ -262,7 +254,7 @@ class ClientThread implements Runnable {
                     while (true) {
                         s += content + "\r\n";
                         System.out.println("收到");
-                        System.out.println("cc" + s);
+                       // System.out.println("cc" + s);
                         content = br.readLine();
                         if ('E' == content.charAt(0)) {
                             break;
