@@ -1,58 +1,39 @@
-import java.awt.BorderLayout;
-import java.awt.Window.Type;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.io.*;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.net.*;
-
-import javax.swing.JOptionPane.*;
-import javax.swing.*;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
 import java.awt.event.*;
+import java.awt.*;
+import java.io.*;
+import java.net.*;
+import javax.swing.*;
 
 public class newClient4 {
     //聊天界面设计
-    JFrame frame = new JFrame("我的数智");
-    JFrame frameChoose = new JFrame("选择你要发送的文件");
-    JPanel contentPane = new JPanel();
-    JPanel contentPane1 = new JPanel();
-    JTextField textField =  new JTextField(50);
-    JTextArea textArea  = new JTextArea(20, 50);
-    JButton button = new JButton("发送文件");
+    JFrame     frame        = new JFrame("我的数智");
+    JFrame     frameChoose  = new JFrame("选择你要发送的文件");
+    JPanel     contentPane  = new JPanel();
+    JPanel     contentPane1 = new JPanel();
+    JTextField textField    = new JTextField(50);
+    JTextArea  textArea     = new JTextArea(20, 50);
+    JButton    button        = new JButton("发送文件");
 
     //登陆界面设计
-    JFrame frame1 = new JFrame("输入你的用户名");
-    JPanel pane1 = new JPanel();
-    JTextField textField1 = new JTextField(16);
-    JButton button1 = new JButton("确认");
+    JFrame      frame1      = new JFrame("输入你的用户名");
+    JPanel      pane1       = new JPanel();
+    JTextField  textField1 = new JTextField(16);
+    JButton     button1     = new JButton("确认");
     //保存文件
-    JFrame frameSave = new JFrame("选择你要发送的文件");
-    String name ;
-    String message;
-    Socket socket;
-    PrintStream writer;
-    BufferedReader reader;
-    String ip;
+    JFrame          frameSave = new JFrame("选择你要发送的文件");
+    String          name ;
+    String          message;
+    Socket          socket;
+    PrintStream     writer;
+    BufferedReader  reader;
+    String           ip;
 
 
-    String fileString = null;
-    String filePath = null;
+    String fileString   = null;
+    String filePath     = null;
     public static void main(String[] args)throws Exception {
         newClient4 nc = new newClient4();
         nc.login();
-
         nc.connectServer();
     }
     //登陆界面，写入用户名。点击按钮获取用户名并且隐藏窗口,并且启动聊天框；
@@ -64,7 +45,6 @@ public class newClient4 {
         pane1.add(button1, BorderLayout.EAST);
 
         frame1.add(pane1);
-
         frame1.pack();
         frame1.setVisible(true);
         button1.addActionListener(new ActionListener() {
@@ -108,11 +88,9 @@ public class newClient4 {
     }
 
     public void choose () {
-        //String fileString = null;
-        //String filePath =null;
         frameChoose.setBounds(300, 100, 200, 200);
         JButton buttonChoose = new JButton("发送");
-        JButton buttonOpen  = new JButton("打开");
+        JButton buttonOpen   = new JButton("打开");
         JTextArea textChoose = new JTextArea(20, 20);
         JTextField textFieldChoose = new JTextField(20);
         JPanel panelChoose = new JPanel();
@@ -124,7 +102,7 @@ public class newClient4 {
         frameChoose.add(panelChoose, BorderLayout.NORTH);
 
         //设置单行框有默认路径
-        textFieldChoose.setText("d:\\1.txt");
+        textFieldChoose.setText("c://");
 
         //当按打开按钮时获取输入的路径
         buttonOpen.addActionListener(new ActionListener() {
@@ -133,7 +111,6 @@ public class newClient4 {
                 textChoose.setText("");
                 //获取单行框的内容
                 fileString = textFieldChoose.getText();
-                //System.out.println(fileString);
                 File file =  new File(fileString);
                 String fileNames[] = file.list();
                 for (String fileName : fileNames) {
@@ -171,7 +148,7 @@ public class newClient4 {
             writer = new PrintStream(socket.getOutputStream());
 
             message = textField.getText().trim();
-            ip = InetAddress.getLocalHost().getHostAddress();
+            //ip = InetAddress.getLocalHost().getHostAddress();
             textField.setText(null);
             writer.println("  " + name + "：" + message);
         } catch (Exception e) {
@@ -190,16 +167,16 @@ public class newClient4 {
         panelSave.add(buttonSave, BorderLayout.CENTER);
         frameSave.add(jspSave, BorderLayout.SOUTH);
         frameSave.add(panelSave, BorderLayout.NORTH);
-        textFieldSave.setText("d:\\2.txt");
+        //textFieldSave.setText("e:\\");
         frameSave.pack();
         frameSave.setVisible(true);
-        //  textFieldSave.setText("e:\\11.txt");
+        textFieldSave.setText("e:\\11.txt");
+        //打开按钮监听
         buttonOpen1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String fileSavePath;
                 textAreaSave.setText("");
                 fileSavePath = textFieldSave.getText();
-                //System.out.println(fileString);
                 File file =  new File(fileSavePath);
                 String fileNames[] = file.list();
                 for (String fileName : fileNames) {
@@ -211,23 +188,17 @@ public class newClient4 {
         buttonSave.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int i = 4;
-                    String fileSavePath  = textFieldSave.getText();
-                    //  BufferedOutputStream bw =null;
-                    //  bw=new BufferedOutputStream(new FileOutputStream(fileSavePath));
-                    BufferedWriter bufw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileSavePath)));
 
-                    //bw.write(content);
-                    //OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(fileSavePath,content));
-                    // bufw.write(line.toUpperCase());
+                    String fileSavePath  = textFieldSave.getText();
+                    BufferedWriter bufw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileSavePath)));
                     bufw.write(content);
-                    System.out.println("save:" + content);
+                    //写入一个分隔行
                     bufw.newLine();
+                    //刷新该流
                     bufw.flush();
 
                     frameSave.setVisible(false);
                 } catch (Exception ex) {
-
                 }
             }
         });
@@ -254,24 +225,21 @@ class ClientThread implements Runnable {
     public void run() {
         try {
             while ((content = br.readLine()) != null) {
-                System.out.println("......");
                 textArea.append(content + "\n");
                 if ('a' == content.charAt(0)) {
                     String s = "";
                     content = br.readLine();
                     while (true) {
-                        s += content + "\r\n";
-                        System.out.println("收到");
-                        System.out.println("cc" + s);
                         content = br.readLine();
+                        s += content + "\r\n";
                         if ('E' == content.charAt(0)) {
+                            content ="";
                             break;
                         }
                     }
                     new newClient4().saveFile(s);
-                } else {
-                    System.out.println("出错");
                 }
+
             }
         } catch (Exception e) {
             System.out.println("测试是否为异常");

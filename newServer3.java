@@ -32,7 +32,6 @@ class ServerThread implements Runnable {
             String content = null;
             int flag  =0;
             while((content = readFromClient())!=null){
-                //PrintStream ps = new PrintStream(socket.getOutputStream());
                 for(Socket socket : newServer3.socketList){
                       PrintStream ps = new PrintStream(socket.getOutputStream());
                       if('a'==content.charAt(0)){
@@ -41,10 +40,7 @@ class ServerThread implements Runnable {
                             ps.println(content);
                         }
 
-                       //PrintStream ps = new PrintStream(socket.getOutputStream());
-                        else{
-                             ps.println(content);
-                         }
+                       }
                          ps.println(content);
                 }
             }
