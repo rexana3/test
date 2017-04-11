@@ -13,6 +13,8 @@ public class newClient4 {
     JTextField textField    = new JTextField(50);
     JTextArea  textArea     = new JTextArea(20, 50);
     JButton    button        = new JButton("发送文件");
+    JTree      tree          ;
+    DefaultMutableTreeNode  online = new  DefaultMutableTreeNode ("在线小伙伴");
 
     //登陆界面设计
     JFrame      frame1      = new JFrame("输入你的用户名");
@@ -63,6 +65,7 @@ public class newClient4 {
         frame.setBounds(350, 100, 450, 300);
         textArea.setEditable(false);
         JScrollPane jsp = new JScrollPane(textArea);
+        //DefaultMutableTreeNode  online = new  DefaultMutableTreeNode ("在线小伙伴");
         contentPane.add(textField, BorderLayout.WEST);
         contentPane.add(button, BorderLayout.EAST);
         frame.add(jsp, BorderLayout.NORTH);
@@ -89,11 +92,11 @@ public class newClient4 {
 
     public void choose () {
         frameChoose.setBounds(300, 100, 200, 200);
-        JButton buttonChoose = new JButton("发送");
-        JButton buttonOpen   = new JButton("打开");
-        JTextArea textChoose = new JTextArea(20, 20);
+        JButton buttonChoose        = new JButton("发送");
+        JButton buttonOpen          = new JButton("打开");
+        JTextArea textChoose        = new JTextArea(20, 20);
         JTextField textFieldChoose = new JTextField(20);
-        JPanel panelChoose = new JPanel();
+        JPanel panelChoose         = new JPanel();
         panelChoose.add(textFieldChoose, BorderLayout.WEST);
         panelChoose.add(buttonChoose, BorderLayout.EAST);
         panelChoose.add(buttonOpen, BorderLayout.CENTER);
@@ -191,7 +194,14 @@ public class newClient4 {
 
                     String fileSavePath  = textFieldSave.getText();
                     BufferedWriter bufw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileSavePath)));
+                    if(content.equals("EOF")){
+                        //bufw.write(content);
+                        System.exit(1);
+                        System.out.println("出错");
+                    }
+                   // else System.out.println("结束");
                     bufw.write(content);
+                    //bufw.write(content);
                     //写入一个分隔行
                     bufw.newLine();
                     //刷新该流
@@ -233,7 +243,7 @@ class ClientThread implements Runnable {
                         content = br.readLine();
                         s += content + "\r\n";
                         if ('E' == content.charAt(0)) {
-                            content ="";
+                           // content ="";
                             break;
                         }
                     }
