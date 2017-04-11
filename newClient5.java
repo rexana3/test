@@ -24,7 +24,8 @@ public class newClient5 {
     JTextArea  textArea     = new JTextArea(20, 50);
     JButton    button        = new JButton("发送文件");
     JScrollPane jsp            = new JScrollPane(textArea);
-     static JTree      tree;
+    static JTree      tree;
+    static DefaultMutableTreeNode  online = new  DefaultMutableTreeNode ("在线");
 
 
     //选择文件发送界面
@@ -46,7 +47,7 @@ public class newClient5 {
 
     static String          fileSavePath;
     static String          name;
-        static String          myName;
+    static String          myName;
     static String          message;
     Socket          socket;
     PrintStream     writer;
@@ -55,6 +56,7 @@ public class newClient5 {
 
     String fileString   = null;
     String filePath     = null;
+    static int j=0;
 
     public static void main(String[] args)throws Exception {
         newClient5 nc = new newClient5();
@@ -69,6 +71,7 @@ public class newClient5 {
     *@return void
     */
     public void login() {
+        tree = new JTree(online);
         frame1.setBounds(500, 300, 1000, 100);
         frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pane1.add(textField1, BorderLayout.WEST);
@@ -84,8 +87,6 @@ public class newClient5 {
                     //用户名发送给服务端
                     System.out.println("登陆界面的用户名" + name);
                     send(name);
-                   //
-                    nameTree();
                 }
                 frame1.setVisible(false);
                 chatDraw();
@@ -93,7 +94,7 @@ public class newClient5 {
         });
     }
     //在线列表的初始化。
-    public  static void nameTree () {
+/*    public  static void nameTree () {
         String xx =null;
         System.out.println("树" + name);
         DefaultMutableTreeNode  online = new  DefaultMutableTreeNode ("在线小伙伴");
@@ -104,7 +105,7 @@ public class newClient5 {
                  xx=perName;
             }
                   tree = new JTree(online);
-           }
+           }*/
 
     /*
     *函数名：chatDraw
@@ -202,19 +203,19 @@ public class newClient5 {
     }
     public void connectServer() throws Exception, IOException {
         socket = new Socket("127.0.0.1", 30000);
-        new Thread(new ClientThread(socket, textArea)).start();
+        new Thread(new ClientThread(socket, textArea,tree,online,j)).start();
         writer = new PrintStream(socket.getOutputStream());
     }
 }
 class ClientThread implements Runnable {
-    //用户名
-    //public static String treeName;
-    String[] namelist;
+    static int j;
+    static String[] namelist = new String[15];
     static String myName = null;
     JFrame frame;
     JPanel     contentPane1;
     JTextArea textArea;
     static JTree tree;
+    static DefaultMutableTreeNode  online ;
     private Socket s;
     FileInputStream fis;
     FileOutputStream fos;
@@ -223,9 +224,12 @@ class ClientThread implements Runnable {
     BufferedReader rbr = null;
     byte[] buf = new byte[100];
     char rflag;
-    public ClientThread(Socket s, JTextArea textArea) throws IOException {
+    public ClientThread(Socket s, JTextArea textArea,JTree tree,DefaultMutableTreeNode  online,int j) throws IOException {
         this.textArea = textArea;
         this.setS(s);
+        this.tree = tree;
+        this.online = online;
+        this.j =j;
         rbr = new BufferedReader(new InputStreamReader(s.getInputStream()));
 
     }
@@ -244,8 +248,19 @@ class ClientThread implements Runnable {
                 } else if (rflag == '$') {
                     saveTxt(newClient5.fileSavePath);
                 } else if (rflag == '%') {
+
                     System.out.println("名字的第一个字符" + rflag);
-                    saveName(content, 1);
+                    String temp= saveName(content, 1);
+                    namelist[j++] = temp;
+
+                    for(int i=0;i<15&&namelist[i]!=null;i++){
+                        DefaultMutableTreeNode  ssss = new  DefaultMutableTreeNode (namelist[i]);
+                        online.add(ssss);
+                        tree=new JTree(online);
+                    }
+/*                    DefaultMutableTreeNode  ssss = new  DefaultMutableTreeNode (temp);
+                    online.add(ssss);
+                    tree=new JTree(online);*/
                 } else {
                     System.out.println("文本消息" + rflag);
                     saveMessage(content);
@@ -295,6 +310,7 @@ class ClientThread implements Runnable {
 
             fos.close();
         } catch (Exception e) {
+            System.out.println("出异常");
 
         }
     }
@@ -322,8 +338,14 @@ class ClientThread implements Runnable {
     public static String saveName(String content, int i) {
         try {
             System.out.println("保存名字" + content.substring(i));
-            myName = content.substring(i);
+             myName = content.substring(i);
+             namelist[i]= myName;
+/*             DefaultMutableTreeNode  ssss = new  DefaultMutableTreeNode (myName);
+             online.add(ssss);
+             tree=new JTree(online);*/
+             System.out.println("成功保存名字");
         } catch (Exception e) {
+            System.out.println("保存名字又异常");
         }
         return myName;
     }

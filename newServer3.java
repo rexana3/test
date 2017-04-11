@@ -15,10 +15,11 @@ public class newServer3 {
             socketList.add(s);
             new Thread(new ServerThread(s)).start();
         }
-
     }
 }
 class ServerThread implements Runnable {
+    static int j=0;
+    static String[] clientsName = new String[15];
     public static Map clients = new HashMap<Socket,String>(30);
     Socket s= null;
     BufferedReader br =null;
@@ -35,11 +36,14 @@ class ServerThread implements Runnable {
                 for(Socket socket : newServer3.socketList){
                     PrintStream ps = new PrintStream(socket.getOutputStream());
                     if(content.charAt(0)=='%'){
-                        System.out.println("有用户"+content);
                         String test =content.substring(1);
+                        clientsName[j++]=content;
                         clients.put(s,test);
-                        ps.println(content);
-                        System.out.println(clients.get(s)+"上线了");
+                       // ps.println(content);
+                        for(int i=0;i<15&&clientsName[i]!=null;i++){
+                            System.out.println(clientsName[i]+"上线了");
+                            ps.println(clientsName[i]);
+                        }
                     }
                     else if(content.charAt(0)=='#'){
                         System.out.println("有人发来媒体文件");
