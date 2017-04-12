@@ -11,7 +11,6 @@ public class newServer3 {
         ServerSocket ss = new ServerSocket(30000);
         while(true){
             Socket s= ss.accept();
-            String ip = s.getInetAddress().getHostAddress();
             socketList.add(s);
             new Thread(new ServerThread(s)).start();
         }
@@ -30,32 +29,31 @@ class ServerThread implements Runnable {
     }
     public void run() {
         try{
-            String content = null;
-            int flag  =0;
+            String content;
+            System.out.println(j);
             while((content = readFromClient())!=null){
-                for(Socket socket : newServer3.socketList){
-                    PrintStream ps = new PrintStream(socket.getOutputStream());
-                    if(content.charAt(0)=='%'){
-                        String test =content.substring(1);
-                        clientsName[j++]=content;
-                        clients.put(s,test);
-                       // ps.println(content);
-                        for(int i=0;i<15&&clientsName[i]!=null;i++){
-                            System.out.println(clientsName[i]+"上线了");
-                            ps.println(clientsName[i]);
+                int x=1;
+                int y = newServer3.socketList.size();
+                 if(content.charAt(0)=='%'){
+                    clientsName[j]=content;
+                    clients.put(s,content.substring(1));
+                    for(Socket socket : newServer3.socketList){
+                        PrintStream ps = new PrintStream(socket.getOutputStream());
+                        if(x<y||x==1){
+                            ps.println(clientsName[j]);
+                            x++;
                         }
-                    }
-                    else if(content.charAt(0)=='#'){
-                        System.out.println("有人发来媒体文件");
-                        ps.println("#");
-                    }
-                    else{
-                      ps.println(" "+clients.get(s)+" : "+content);
-                    }
-
-                }
-            }
+                        else if(x==y){
+                            for(int i=0;i<=j;i++){
+                                ps.println(clientsName[i]);
+                            }
+                        }
+                 }
+             }
+             j++;
+         }
             System.out.println("不再发送");
+
         }catch(IOException e){
             e.printStackTrace();
         }
@@ -63,15 +61,12 @@ class ServerThread implements Runnable {
     private String readFromClient(){
         try{
             return  br.readLine();
-
         }catch(IOException e){
             newServer3.socketList.remove(s);
-
         }
         return null;
     }
 }
-
 
 
 

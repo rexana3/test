@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.JList.*;
 import javax.swing.JTree.*;
 import javax.swing.tree.DefaultMutableTreeNode;
-
+import javax.swing.tree.*;
 
 public class newClient5 {
     //登陆界面设计
@@ -26,7 +26,7 @@ public class newClient5 {
     JScrollPane jsp            = new JScrollPane(textArea);
     static JTree      tree;
     static DefaultMutableTreeNode  online = new  DefaultMutableTreeNode ("在线");
-
+    static DefaultTreeModel dt = new DefaultTreeModel(online);  
 
     //选择文件发送界面
     JButton buttonChoose        = new JButton("发送");
@@ -203,11 +203,12 @@ public class newClient5 {
     }
     public void connectServer() throws Exception, IOException {
         socket = new Socket("127.0.0.1", 30000);
-        new Thread(new ClientThread(socket, textArea,tree,online,j)).start();
+        new Thread(new ClientThread(socket, textArea,tree,online,j,dt)).start();
         writer = new PrintStream(socket.getOutputStream());
     }
 }
 class ClientThread implements Runnable {
+    DefaultTreeModel dt;
     static int j;
     static String[] namelist = new String[15];
     static String myName = null;
@@ -224,43 +225,45 @@ class ClientThread implements Runnable {
     BufferedReader rbr = null;
     byte[] buf = new byte[100];
     char rflag;
-    public ClientThread(Socket s, JTextArea textArea,JTree tree,DefaultMutableTreeNode  online,int j) throws IOException {
+    public ClientThread(Socket s, JTextArea textArea,JTree tree,DefaultMutableTreeNode  online,int j,DefaultTreeModel dt) throws IOException {
         this.textArea = textArea;
         this.setS(s);
         this.tree = tree;
         this.online = online;
         this.j =j;
+        this.dt=dt;
         rbr = new BufferedReader(new InputStreamReader(s.getInputStream()));
 
     }
     public void run() {
         try {
             while ((content = rbr.readLine()) != null) {
-                System.out.println("开始获取第一个字符");
                 while (true) {
+                    //这里是空，也就是说我服务端发过来的消息是空的。
                     rflag = content.charAt(0);
-                    System.out.println("收到的消息" + content + "content的第一个字符" + rflag);
+                    System.out.println(rflag);
                     break;
                 }
-                System.out.println("判断是什么类型" + rflag);
                 if (rflag == '#') {
                     saveMp3(newClient5.fileSavePath);
                 } else if (rflag == '$') {
                     saveTxt(newClient5.fileSavePath);
                 } else if (rflag == '%') {
-
-                    System.out.println("名字的第一个字符" + rflag);
-                    String temp= saveName(content, 1);
+                    String temp=content.substring(1);
                     namelist[j++] = temp;
-
-                    for(int i=0;i<15&&namelist[i]!=null;i++){
-                        DefaultMutableTreeNode  ssss = new  DefaultMutableTreeNode (namelist[i]);
+                    //for(int i=0;namelist[i]!=null;i++){
+                     //  System.out.println("遍历用户"+i+namelist[i]+"创建节点"+namelist[j-1]);
+                        DefaultMutableTreeNode  ssss = new  DefaultMutableTreeNode (namelist[j-1]);
+                        //DefaultTreeModel dt = new DefaultTreeModel(online);  
                         online.add(ssss);
+                        /*dt.reload();
                         tree=new JTree(online);
-                    }
-/*                    DefaultMutableTreeNode  ssss = new  DefaultMutableTreeNode (temp);
-                    online.add(ssss);
-                    tree=new JTree(online);*/
+                        tree.setModel(dt);*/
+                   // }
+                    dt.reload();
+                    tree=new JTree(online);
+                    tree.setModel(dt);
+                    System.out.println("......");
                 } else {
                     System.out.println("文本消息" + rflag);
                     saveMessage(content);
@@ -335,20 +338,16 @@ class ClientThread implements Runnable {
     *@param
     *@return name
     */
-    public static String saveName(String content, int i) {
+/*    public static String saveName(String content, int i) {
         try {
             System.out.println("保存名字" + content.substring(i));
              myName = content.substring(i);
-             namelist[i]= myName;
-/*             DefaultMutableTreeNode  ssss = new  DefaultMutableTreeNode (myName);
-             online.add(ssss);
-             tree=new JTree(online);*/
              System.out.println("成功保存名字");
         } catch (Exception e) {
             System.out.println("保存名字又异常");
         }
         return myName;
-    }
+    }*/
     public Socket getS() {
         return s;
     }
