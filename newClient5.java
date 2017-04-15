@@ -7,6 +7,7 @@ import javax.swing.JList.*;
 import javax.swing.JTree.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.*;
+import java.util.*;
 
 public class newClient5 {
     //登陆界面设计
@@ -141,9 +142,69 @@ public class newClient5 {
         //按钮监听调用choose方法让用户选择文件
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //choose();
+                choose();
             }
         });
+    }
+    /*choose
+    *选择发送的文件
+    *
+    */
+    public void choose () {
+        frameChoose.setBounds(300, 100, 200, 200);
+        JButton buttonChoose        = new JButton("发送");
+        JButton buttonOpen          = new JButton("打开");
+        JTextArea textChoose        = new JTextArea(20, 20);
+        JTextField textFieldChoose = new JTextField(20);
+        JPanel panelChoose         = new JPanel();
+        panelChoose.add(textFieldChoose, BorderLayout.WEST);
+        panelChoose.add(buttonChoose, BorderLayout.EAST);
+        panelChoose.add(buttonOpen, BorderLayout.CENTER);
+        JScrollPane jspChoose = new JScrollPane(textChoose);
+        frameChoose.add(jspChoose, BorderLayout.SOUTH);
+        frameChoose.add(panelChoose, BorderLayout.NORTH);
+
+        //设置单行框有默认路径
+        textFieldChoose.setText("e://1.txt");
+
+        //当按打开按钮时获取输入的路径
+        buttonOpen.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                //清空单行框
+                textChoose.setText("");
+                //获取单行框的内容
+                fileString = textFieldChoose.getText();
+                File file =  new File(fileString);
+                String fileNames[] = file.list();
+                for (String fileName : fileNames) {
+                    textChoose.append(fileName + "\n");
+                }
+            }
+        });
+        //点击发送按钮,此时就把文件发送出去了。
+        buttonChoose.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    writer = new PrintStream(socket.getOutputStream());
+                    filePath = textFieldChoose.getText();
+                    BufferedReader br = new BufferedReader(new FileReader(filePath));
+                    writer.println("$");
+                    String line = null;
+                    while ((line = br.readLine()) != null) {
+                        writer.println(line);
+                        System.out.println("发出去的文件内容" + line);
+                    }
+                    System.out.println("......结束.....");
+                    writer.println("#");
+                    writer.flush();
+                    frameChoose.setVisible(false);
+                } catch (Exception ex) {
+                }
+            }
+        });
+
+        frameChoose.pack();
+        frameChoose.setVisible(true);
     }
     /*
     *函数名：send
@@ -164,6 +225,7 @@ public class newClient5 {
     */
     public void saveFile(String content) {
         frameSave.setBounds(900, 100, 200, 200);
+
         panelSave.add(textFieldSave, BorderLayout.WEST);
         panelSave.add(buttonOpen1, BorderLayout.EAST);
         panelSave.add(buttonSave, BorderLayout.CENTER);
@@ -180,6 +242,7 @@ public class newClient5 {
                 fileSavePath = textFieldSave.getText();
                 File file =  new File(fileSavePath);
                 String fileNames[] = file.list();
+                //显示目录
                 for (String fileName : fileNames) {
                     textAreaSave.append(fileName + "\n");
                 }
@@ -189,7 +252,6 @@ public class newClient5 {
         buttonSave.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-
                     fileSavePath  = textFieldSave.getText();
                     BufferedWriter bufw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileSavePath)));
                     bufw.write(content);
@@ -208,6 +270,7 @@ public class newClient5 {
     }
 }
 class ClientThread implements Runnable {
+    Enumeration<?> enumeration;
     DefaultTreeModel dt;
     static int j;
     static String[] namelist = new String[15];
@@ -237,38 +300,66 @@ class ClientThread implements Runnable {
     }
     public void run() {
         try {
+
             while ((content = rbr.readLine()) != null) {
                 while (true) {
-                    //这里是空，也就是说我服务端发过来的消息是空的。
                     rflag = content.charAt(0);
                     System.out.println(rflag);
                     break;
                 }
-                if (rflag == '#') {
-                    saveMp3(newClient5.fileSavePath);
-                } else if (rflag == '$') {
-                    saveTxt(newClient5.fileSavePath);
+                if (rflag == '$') {
+                    String tx = "";
+                    int e = 0;
+                    System.out.println(".......收到文件,请求保存......");
+                    // new newClient5().saveFile(saveTxt());
+                    while ((content = rbr.readLine()) != null) {
+                        System.out.println("收到的文件" + content);
+                        if (content.charAt(0) == '#') {
+                            break;
+                        }
+                        if (e == 0) {
+                            tx = content;
+                            e--;
+                        } else {
+                            tx = tx + "\r\n" + content;
+                        }
+
+
+                    }
+                    System.out.println("读取完毕");
+
+                    new newClient5().saveFile(tx);
+                    System.out.println("txtwenjian" + tx);
+                    //保存名字
                 } else if (rflag == '%') {
                     String temp = content.substring(1);
                     namelist[j++] = temp;
-                    //for(int i=0;namelist[i]!=null;i++){
-                    //  System.out.println("遍历用户"+i+namelist[i]+"创建节点"+namelist[j-1]);
                     DefaultMutableTreeNode  ssss = new  DefaultMutableTreeNode (namelist[j - 1]);
-                    //DefaultTreeModel dt = new DefaultTreeModel(online);
                     online.add(ssss);
-                    /*dt.reload();
-                    tree=new JTree(online);
-                    tree.setModel(dt);*/
-                    // }
                     dt.reload();
                     tree = new JTree(online);
                     tree.setModel(dt);
                     System.out.println("......");
+                } else if (rflag == '@') {
+                    enumeration = online.children(); //遍历该节点的所有子节点.
+                    //知道了遍历方式，开始遍历.
+                    while (enumeration.hasMoreElements()) { //遍历枚举对象.
+                        //先定义一个节点变量.
+                        DefaultMutableTreeNode node;
+                        node = (DefaultMutableTreeNode) enumeration.nextElement(); //将节点名称给node.
+                        String name = node.toString();
+                        System.out.println(name);
+                        if (name.equals(content.substring(2))) {
+                            dt.removeNodeFromParent(node);
+
+                        }
+                    }
                 } else {
                     System.out.println("文本消息" + rflag);
                     saveMessage(content);
                 }
             }
+
         } catch (Exception e) {
             System.out.println("发生异常");
             e.printStackTrace();
@@ -285,6 +376,7 @@ class ClientThread implements Runnable {
             byte[] buf = new byte[1024];
             byte[] flag = new byte[2];
             flag[0] = '*';
+            flag[1] = '*';
             int len = 0;
             while ((len = fis.read(buf)) != -1) {
                 fos.write(buf, 0, len);
@@ -295,27 +387,21 @@ class ClientThread implements Runnable {
 
     }
     /*saveTxt
-    *保存文本文件，用字符流读取和输出
+    *读取文本文件
     *@param 将要保存的地址
     *@return
     */
-    public void saveTxt(String outPath) {
+    public String saveTxt() {
+        String txt = "";
         try {
-            FileOutputStream fos = new FileOutputStream(outPath);
-            byte[] buf = new byte[1024];
-            byte[] flag = new byte[2];
-            flag[0] = '*';
             int len = 0;
-            while ((len = fis.read(buf)) != -1) {
-                fos.write(buf, 0, len);
-            }
-            fos.write(flag, 0, 1);
+            System.out.println("文件读取完毕");
 
-            fos.close();
+
         } catch (Exception e) {
-            System.out.println("出异常");
-
+            System.out.println("保存文件出异常");
         }
+        return txt;
     }
     /*saveMeaasge
     *收发聊天消息，并将消息存储在本地文件中
